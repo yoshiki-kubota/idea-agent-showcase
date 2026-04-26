@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=1200">
-<title>IDEA Agent - CS向け説明資料</title>
+<title>IDEA Agent - 社内共有資料</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -147,7 +147,7 @@
     margin-top: 12px; font-size: 10px; font-weight: 600; padding: 4px 12px;
     border-radius: 20px; display: inline-block;
   }
-  .ag-out-slack { background: rgba(34,197,94,0.1); color: #4ade80; }
+  .ag-out-cw { background: rgba(34,197,94,0.1); color: #4ade80; }
   .ag-out-drive { background: rgba(250,204,21,0.1); color: #fbbf24; }
 
   .focus-banner {
@@ -394,8 +394,8 @@
   <div class="hero-content">
     <h1>IDEA Agent</h1>
     <div class="tagline">会議が終わったら、あとはAIが動く</div>
-    <div class="subtitle">IDEA Agentは、会議の文字起こしをトリガーに、<br>タスク抽出・企画書作成・調査レポート生成をAIが自動で処理する仕組みです。<br>今回は、その基盤となる「ナレッジ共有」の仕組みをCS向けに紹介します。</div>
-    <div class="badge">CS部門向け説明資料 2026.04</div>
+    <div class="subtitle">IDEA Agentは、会議の文字起こしをトリガーに、<br>タスク抽出・企画書作成・調査レポート生成をAIが自動で処理する仕組みです。<br>現在の開発状況と、実際にどう使えるのかを共有します。</div>
+    <div class="badge">社内共有資料 2026.04</div>
   </div>
 </div>
 
@@ -451,7 +451,7 @@
         <div class="vd-node">
           <div class="vd-circle vd-c-output">📢</div>
           <div class="vd-label">通知・保存</div>
-          <div class="vd-desc">Slack / Drive</div>
+          <div class="vd-desc">ChatWork / Drive</div>
         </div>
       </div>
 
@@ -462,7 +462,7 @@
             <div class="ag-icon-wrap ag-icon-todo">✅</div>
             <div class="ag-name">Todo Agent</div>
             <div class="ag-role">ネクストアクション<br>抽出・通知</div>
-            <div class="ag-out ag-out-slack">→ Slack</div>
+            <div class="ag-out ag-out-cw">→ ChatWork</div>
           </div>
           <div class="ag-card">
             <div class="ag-icon-wrap ag-icon-plan">📋</div>
@@ -480,15 +480,15 @@
             <div class="ag-icon-wrap ag-icon-email">✉️</div>
             <div class="ag-name">Email Agent</div>
             <div class="ag-role">フォローメール<br>文案作成</div>
-            <div class="ag-out ag-out-slack">→ Slack</div>
+            <div class="ag-out ag-out-cw">→ ChatWork</div>
           </div>
         </div>
       </div>
     </div>
 
     <div class="focus-banner">
-      <div class="fb-title">今回のフォーカス: ナレッジ共有基盤</div>
-      <p>これらのエージェントが賢く動くためには、クライアントの文脈を記憶する「ナレッジ基盤」が必要です。<br>今回はその基盤 — 過去のMTG・成果物・取引情報をAIが参照できる仕組み — を紹介します。</p>
+      <div class="fb-title">現在の進捗: ナレッジ共有基盤が稼働中</div>
+      <p>エージェントが賢く動くためには、クライアントの文脈を記憶する「ナレッジ基盤」が必要です。<br>この基盤 — 過去のMTG・成果物・取引情報をAIが参照できる仕組み — はすでに構築済みです。</p>
     </div>
   </div>
 
@@ -501,7 +501,7 @@
   <!-- 会話デモ: 何ができるのか -->
   <div class="section">
     <div class="section-label">What You Can Do</div>
-    <h2>こんなふうに使えます</h2>
+    <h2>今できること: こんなふうに使えます</h2>
     <p>AIに話しかけるだけ。過去の情報は、AIが自動で探してきます。</p>
 
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-top:24px;">
@@ -708,9 +708,33 @@
     <h2>導入方法・使い方</h2>
     <p>セットアップ手順と詳しい使い方は、CS展開時に別途ご案内します。<br>コマンドを覚える必要はなく、日本語で話しかけるだけで使えるように設計しています。</p>
 
-    <div class="quote-box" style="margin-top:20px;">
-      <div class="q-text" style="font-size:16px;">導入ガイド・操作マニュアルは <span>近日公開予定</span></div>
-      <div class="q-sub">セットアップは3ステップで完了します。展開時に個別サポートも行います。</div>
+    <div class="steps-row" style="margin-top:20px;">
+      <div class="step-card">
+        <div class="s-num">1</div>
+        <h4>install.sh を実行</h4>
+        <p>1コマンドで環境構築が完了。Skills・ルール・セキュリティ設定を自動で配置します。</p>
+      </div>
+      <div class="step-card">
+        <div class="s-num">2</div>
+        <h4>Claude Codeで会話</h4>
+        <p>日本語で話しかけるだけ。コマンドを覚える必要はありません。</p>
+      </div>
+      <div class="step-card">
+        <div class="s-num">3</div>
+        <h4>ナレッジを蓄積</h4>
+        <p>良い知見が出たら「ナレッジに入れて」の一言で、チーム全体に共有されます。</p>
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:20px;">
+      <div style="background:rgba(34,197,94,0.06); border:1px solid rgba(34,197,94,0.2); border-radius:14px; padding:20px 24px;">
+        <div style="font-size:13px; font-weight:700; color:#4ade80; margin-bottom:8px;">セキュリティ対策済み</div>
+        <div style="font-size:12px; color:#94a3b8; line-height:1.7;">APIキー・パスワード等の機密情報漏洩を防ぐpre-commit hook、AIの行動制限ルール、Auto Mode（安全な操作のみ自動実行）を標準装備。</div>
+      </div>
+      <div style="background:rgba(59,130,246,0.06); border:1px solid rgba(59,130,246,0.2); border-radius:14px; padding:20px 24px;">
+        <div style="font-size:13px; font-weight:700; color:#60a5fa; margin-bottom:8px;">Mac / Windows 対応</div>
+        <div style="font-size:12px; color:#94a3b8; line-height:1.7;">Mac用 install.sh、Windows用 install.ps1 を用意。非エンジニアでもターミナルに貼り付けるだけで導入完了します。</div>
+      </div>
     </div>
   </div>
 
@@ -721,14 +745,19 @@
 
     <div class="roadmap-row">
       <div class="roadmap-item done">
-        <div class="r-phase">DONE</div>
+        <div class="r-phase">PHASE 1 — DONE</div>
         <h4>ナレッジ基盤構築</h4>
-        <p>242社のフォルダ構成、tldv文字起こし671件格納、成果物Drive連携219社、Pipedrive 923社マスタ連携、ナレッジ保存・検索・push/pull Skills</p>
+        <p>242社のフォルダ構成、tldv文字起こし671件格納、成果物Drive連携219社、Pipedrive 923社マスタ連携、セキュリティキット整備</p>
       </div>
       <div class="roadmap-item current">
-        <div class="r-phase">NEXT</div>
+        <div class="r-phase">PHASE 2 — NOW</div>
         <h4>CS展開 + Skills強化</h4>
-        <p>CS部門への導入、Drive参照の自動化（クライアント名からフォルダを自動特定）、導入ガイド・操作マニュアル公開</p>
+        <p>CS部門への導入開始、クライアント自動検出Skill、Drive参照の自動化、導入ガイド・操作マニュアル公開</p>
+      </div>
+      <div class="roadmap-item next">
+        <div class="r-phase">PHASE 3 — FUTURE</div>
+        <h4>MAIA: MTG後の自動処理</h4>
+        <p>tldv Webhookをトリガーに、文字起こし取得→ナレッジ保存→タスク抽出→通知を全自動化。ディレクターAI+専門エージェントが並列処理</p>
       </div>
     </div>
   </div>
