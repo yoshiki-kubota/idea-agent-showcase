@@ -259,7 +259,7 @@
       <thead>
         <tr>
           <th style="width:140px;">項目</th>
-          <th class="th-highlight" style="width:240px;">A. 社内Mac Mini<br><span style="font-size:10px; font-weight:400;">+ Claude Code Remote</span></th>
+          <th class="th-highlight" style="width:240px;">A. 社内PC（常時稼働機）<br><span style="font-size:10px; font-weight:400;">+ Claude Code Remote</span></th>
           <th style="width:240px;">B. Cloud Run<br><span style="font-size:10px; font-weight:400;">+ Claude Agent SDK</span></th>
           <th style="width:240px;">C. GAS<br><span style="font-size:10px; font-weight:400;">+ Claude API直接呼び出し</span></th>
         </tr>
@@ -267,7 +267,7 @@
       <tbody>
         <tr>
           <td style="color:#94a3b8; font-weight:600;">概要</td>
-          <td class="highlight-col">社内にMac Miniを1台置き、<br>AIを常時稼働させる</td>
+          <td class="highlight-col">社内にPCを1台置き（Windows/Mac）、<br>AIを常時稼働させる</td>
           <td>Google Cloudのサーバーレス環境で<br>AIプログラムを動かす</td>
           <td>Google Apps Script上で<br>Claude APIを直接呼ぶ</td>
         </tr>
@@ -279,13 +279,13 @@
         </tr>
         <tr>
           <td style="color:#94a3b8; font-weight:600;">初期コスト</td>
-          <td class="highlight-col">Mac Mini: <strong>約10〜15万円</strong></td>
+          <td class="highlight-col">PC1台: <strong>約5〜15万円</strong><br><span style="font-size:11px; color:#64748b;">社内に余っているPCがあれば0円</span></td>
           <td><strong>0円</strong>（従量課金）</td>
           <td><strong>0円</strong></td>
         </tr>
         <tr>
           <td style="color:#94a3b8; font-weight:600;">月額ランニング</td>
-          <td class="highlight-col">電気代: 約500円<br>Claude API: <strong>使用量に応じて</strong></td>
+          <td class="highlight-col">電気代: 約500円/月<br>Claude API: <strong>使用量に応じて</strong></td>
           <td>Cloud Run: <strong>約500〜3,000円</strong><br>Claude API: 使用量に応じて</td>
           <td>GAS: 0円<br>Claude API: 使用量に応じて</td>
         </tr>
@@ -334,9 +334,9 @@
       <!-- Option A -->
       <div class="option-card oc-recommend">
         <div class="oc-badge badge-recommend">推奨（本番運用）</div>
-        <h3>A. 社内Mac Mini + Claude Code Remote</h3>
+        <h3>A. 社内PC（常時稼働機）+ Claude Code Remote</h3>
         <div class="oc-desc">
-          社内ネットワークにMac Miniを1台設置。<br>
+          社内ネットワークにPCを1台設置（<strong>Windows / Mac どちらでもOK</strong>）。<br>
           今ローカルPCで動かしているIDEA Agentの環境を<strong>そのまま移設</strong>するイメージ。<br>
           外部（tldv）からの信号を受け取り、AIが自動で処理を実行。
         </div>
@@ -347,13 +347,14 @@
             <li>.mdファイルを編集するだけで<strong>機能追加・修正が簡単</strong></li>
             <li>エンジニア以外でもルール追記が可能</li>
             <li>データが社内に留まる（<strong>セキュリティ面で有利</strong>）</li>
+            <li>社内に余っているPCがあれば<strong>初期費用ゼロ</strong></li>
           </ul>
         </div>
         <div class="oc-cons">
           <h4>デメリット・リスク</h4>
           <ul>
             <li>ハードウェアの管理が必要（故障・停電対応）</li>
-            <li>Mac Miniの初期費用（約10〜15万円）</li>
+            <li>常時起動のため電源・ネットワークの確保が必要</li>
             <li>ネットワーク設定が必要（社内NW担当と連携）</li>
           </ul>
         </div>
@@ -420,8 +421,9 @@
         <div class="oc-badge badge-alt">代替案</div>
         <h3>D. クラウドVM（VPS）</h3>
         <div class="oc-desc">
-          AWSやGCPの仮想マシンを月額契約。<br>
-          Mac Miniと同じ動かし方だが、<strong>ハードウェアがクラウド上</strong>にある。
+          AWS/GCPで仮想マシンを月額契約し、<strong>24時間起動しっぱなし</strong>にする。<br>
+          その中にClaude Codeをインストールし、.mdルール・Skillを配置。<br>
+          社内PCと同じ動かし方だが、<strong>物理的な機器が不要</strong>。
         </div>
         <div class="oc-pros">
           <h4>メリット</h4>
@@ -452,10 +454,10 @@
 
     <div class="cost-grid">
       <div class="cost-card" style="border-color:rgba(59,130,246,0.3);">
-        <div class="cc-label" style="color:#60a5fa;">A. Mac Mini</div>
+        <div class="cc-label" style="color:#60a5fa;">A. 社内PC</div>
         <div class="cc-price">約500円</div>
         <div class="cc-unit">/月（電気代のみ）</div>
-        <div class="cc-detail">初期費用: 10〜15万円<br>償却後は電気代のみ</div>
+        <div class="cc-detail">初期費用: 余剰PCなら0円<br>新規購入でも5〜15万円</div>
       </div>
       <div class="cost-card">
         <div class="cc-label">B. Cloud Run</div>
