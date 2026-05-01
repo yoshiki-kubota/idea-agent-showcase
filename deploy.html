@@ -524,49 +524,241 @@
     </div>
   </div>
 
-  <!-- 推奨ロードマップ -->
+  <!-- 考えている進め方 -->
   <div class="section">
     <div class="section-label">Roadmap</div>
-    <h2>推奨する進め方</h2>
-    <p>いきなり本番環境を構築するのではなく、段階的に進めることでリスクを最小化します。</p>
+    <h2>考えている進め方</h2>
+    <p>いきなり本番環境を構築するのではなく、段階的に進めます。<br>最終的には<strong>社内のMacBook Pro</strong>を常時稼働機として、フルスペックのエージェントを動かします。</p>
 
     <div class="timeline">
       <div class="tl-item">
-        <div class="tl-time">STEP 1（1〜2日）</div>
-        <div class="tl-title">GASでPoC: 最小構成で動作確認</div>
+        <div class="tl-time">STEP 1: GASでPoC（1〜2日）</div>
+        <div class="tl-title">最小構成で「自動処理が動く」ことを実証</div>
         <div class="tl-desc">
           tldv Webhook → GAS → GitHubに文字起こし保存 + ChatWork通知<br>
-          費用ゼロで「自動処理が動く」ことを実証する。<br>
-          <strong>ここで得られるもの:</strong> tldv Webhookの動作確認、処理フローの検証
+          費用ゼロ、開発1〜2日で構築可能。<br>
+          <strong>検証すること:</strong> tldv Webhookが正しく飛ぶか、文字起こし取得→保存→通知の一連の流れ
         </div>
       </div>
       <div class="tl-item">
-        <div class="tl-time">STEP 2（1〜2週間）</div>
-        <div class="tl-title">GASにAI処理を追加</div>
+        <div class="tl-time">STEP 2: GASにAI要約を追加（1〜2週間）</div>
+        <div class="tl-title">Claude APIで要約・タスク抽出を自動化</div>
         <div class="tl-desc">
-          文字起こしをClaude APIに渡してタスク抽出・要約を自動化。<br>
-          ChatWorkに「MTG要約 + ネクストアクション」を自動投稿。<br>
-          <strong>ここで得られるもの:</strong> 実運用レベルの自動通知、チームからのフィードバック
+          文字起こしをClaude APIに渡して要約+ネクストアクション抽出。<br>
+          ChatWorkに「MTG要約 + タスク一覧」を自動投稿。<br>
+          <strong>ここでの限界:</strong> GASは6分実行制限があり、エージェントの複雑な振る舞い（Skill連携・Drive参照・複数ステップ処理）は実現できない
         </div>
       </div>
       <div class="tl-item">
-        <div class="tl-time">STEP 3（要検討）</div>
-        <div class="tl-title">本番環境の選定・構築</div>
+        <div class="tl-time">STEP 3: 実機（MacBook Pro）でフル稼働</div>
+        <div class="tl-title">IDEA Agentのフルスペックを常時稼働</div>
         <div class="tl-desc">
-          STEP 2の結果を踏まえて、本番環境を決定。<br>
-          GASで十分 → そのまま運用。より高度な処理が必要 → Mac Mini or Cloud Runへ移行。<br>
-          <strong>判断基準:</strong> 処理の複雑さ、6分制限に引っかかるか、エージェント機能が必要か
+          社内のMacBook Proにリポジトリ + Claude Code環境を構築。<br>
+          今ローカルで作り込んだ.mdルール・Skill・Drive連携が<strong>そのまま動く</strong>。<br>
+          Webhook受信 → AIエージェントが自動処理 → 企画書ドラフト・調査レポートまで自動生成。<br>
+          <strong>GASでは不可能だった</strong>高度なエージェント処理が実現可能に。
         </div>
       </div>
     </div>
 
     <div class="recommend-box">
-      <h3>結論: まずGASで小さく始め、必要に応じてスケールアップ</h3>
+      <h3>GASで小さく動かして検証 → MacBook Proでフル展開</h3>
       <p>
-        初期費用ゼロ・開発1〜2日で<strong>「MTGが終わったら自動通知」</strong>を実現できます。<br>
-        その結果を見て、本格的なインフラ投資（Mac Mini等）を判断するのが最もリスクが低いアプローチです。<br><br>
-        <strong>GASのPoC → チームの反応を見る → 本番環境を決める</strong>
+        まずGASで費用ゼロ・最短で<strong>「MTGが終わったら自動で通知が来る」</strong>を実証します。<br>
+        チームの反応を見ながら、最終的にはMacBook Proで<strong>エージェントのフル機能</strong>を稼働させます。
       </p>
+    </div>
+  </div>
+
+  <!-- 実機の実装アーキテクチャ -->
+  <div class="section">
+    <div class="section-label">Implementation Detail</div>
+    <h2>MacBook Pro 実装の仕組み（STEP 3 の詳細）</h2>
+    <p>「社内のMacBook Proで具体的にどう動くのか」を説明します。</p>
+
+    <!-- 全体フロー図 -->
+    <div style="margin-top:24px; padding:28px; background:rgba(15,23,42,0.6); border-radius:16px; border:1px solid rgba(148,163,184,0.08);">
+      <div style="font-size:12px; font-weight:700; color:#3b82f6; letter-spacing:2px; margin-bottom:16px;">FULL FLOW</div>
+
+      <!-- Row 1: Trigger -->
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px;">
+        <div style="background:rgba(250,204,21,0.08); border:1px solid rgba(250,204,21,0.2); border-radius:12px; padding:12px 16px; text-align:center; min-width:120px;">
+          <div style="font-size:22px;">🎤</div>
+          <div style="font-size:12px; font-weight:700; color:#fbbf24;">MTG終了</div>
+        </div>
+        <div style="color:#475569;">→</div>
+        <div style="background:rgba(250,204,21,0.08); border:1px solid rgba(250,204,21,0.2); border-radius:12px; padding:12px 16px; text-align:center; min-width:140px;">
+          <div style="font-size:22px;">📝</div>
+          <div style="font-size:12px; font-weight:700; color:#fbbf24;">tldv</div>
+          <div style="font-size:10px; color:#64748b;">文字起こし完了</div>
+        </div>
+        <div style="color:#475569;">→</div>
+        <div style="background:rgba(250,204,21,0.08); border:1px solid rgba(250,204,21,0.2); border-radius:12px; padding:12px 16px; text-align:center; min-width:180px;">
+          <div style="font-size:22px;">🔔</div>
+          <div style="font-size:12px; font-weight:700; color:#fbbf24;">Webhook送信</div>
+          <div style="font-size:10px; color:#64748b;">tldv → MacBook Proへ通知</div>
+        </div>
+        <div style="color:#475569;">→</div>
+        <div style="background:rgba(59,130,246,0.08); border:1px solid rgba(59,130,246,0.2); border-radius:12px; padding:12px 16px; text-align:center; min-width:200px;">
+          <div style="font-size:22px;">🖥️</div>
+          <div style="font-size:12px; font-weight:700; color:#60a5fa;">MacBook Pro（常時稼働）</div>
+          <div style="font-size:10px; color:#64748b;">ローカルAPIサーバーが受信</div>
+        </div>
+      </div>
+
+      <!-- Row 2: MacBook内部 -->
+      <div style="background:rgba(59,130,246,0.04); border:2px solid rgba(59,130,246,0.15); border-radius:16px; padding:24px; margin-bottom:20px;">
+        <div style="font-size:11px; font-weight:700; color:#60a5fa; letter-spacing:2px; margin-bottom:14px;">MacBook Pro 内部の処理</div>
+        <div style="display:grid; grid-template-columns:1fr auto 1fr auto 1fr; align-items:center; gap:8px;">
+          <div style="background:rgba(59,130,246,0.1); border-radius:10px; padding:14px; text-align:center;">
+            <div style="font-size:18px;">🌐</div>
+            <div style="font-size:12px; font-weight:700; color:#e2e8f0; margin-top:4px;">ローカルAPIサーバー</div>
+            <div style="font-size:10px; color:#64748b; margin-top:2px;">Flask / Express 等<br>Webhookを待ち受ける</div>
+          </div>
+          <div style="color:#475569; font-size:16px;">→</div>
+          <div style="background:rgba(168,85,247,0.1); border-radius:10px; padding:14px; text-align:center;">
+            <div style="font-size:18px;">🧠</div>
+            <div style="font-size:12px; font-weight:700; color:#e2e8f0; margin-top:4px;">Claude Code</div>
+            <div style="font-size:10px; color:#64748b; margin-top:2px;">.mdルール・Skill<br>エージェント処理を実行</div>
+          </div>
+          <div style="color:#475569; font-size:16px;">→</div>
+          <div style="background:rgba(34,197,94,0.1); border-radius:10px; padding:14px; text-align:center;">
+            <div style="font-size:18px;">📤</div>
+            <div style="font-size:12px; font-weight:700; color:#e2e8f0; margin-top:4px;">結果を出力</div>
+            <div style="font-size:10px; color:#64748b; margin-top:2px;">GitHub / Drive / ChatWork<br>に自動で保存・通知</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 3: Outputs -->
+      <div style="display:flex; justify-content:center; gap:16px;">
+        <div style="background:rgba(34,197,94,0.06); border:1px solid rgba(34,197,94,0.2); border-radius:10px; padding:10px 20px; text-align:center;">
+          <div style="font-size:16px;">🐙</div>
+          <div style="font-size:11px; font-weight:700; color:#4ade80;">GitHub</div>
+          <div style="font-size:10px; color:#64748b;">文字起こし・ナレッジ保存</div>
+        </div>
+        <div style="background:rgba(250,204,21,0.06); border:1px solid rgba(250,204,21,0.2); border-radius:10px; padding:10px 20px; text-align:center;">
+          <div style="font-size:16px;">📁</div>
+          <div style="font-size:11px; font-weight:700; color:#fbbf24;">Google Drive</div>
+          <div style="font-size:10px; color:#64748b;">企画書ドラフト等を格納</div>
+        </div>
+        <div style="background:rgba(34,197,94,0.06); border:1px solid rgba(34,197,94,0.2); border-radius:10px; padding:10px 20px; text-align:center;">
+          <div style="font-size:16px;">💬</div>
+          <div style="font-size:11px; font-weight:700; color:#4ade80;">ChatWork</div>
+          <div style="font-size:10px; color:#64748b;">要約・タスクを通知</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 技術的なQ&A -->
+    <h3 style="font-size:16px; font-weight:700; color:#f1f5f9; margin-top:32px; margin-bottom:16px;">技術的なポイント</h3>
+
+    <div style="display:flex; flex-direction:column; gap:16px;">
+
+      <!-- Q1 -->
+      <div style="background:rgba(15,23,42,0.5); border:1px solid rgba(148,163,184,0.1); border-radius:14px; padding:20px 24px;">
+        <div style="font-size:13px; font-weight:700; color:#60a5fa; margin-bottom:8px;">Q. tldvのWebhookをどうやってMacBook Proで受け取る？</div>
+        <div style="font-size:13px; color:#94a3b8; line-height:1.8;">
+          MacBook Pro上に<strong style="color:#e2e8f0;">ローカルAPIサーバー</strong>（Flask/Expressなど）を立ち上げます。<br>
+          ただし、そのままではインターネットからアクセスできないため、<strong style="color:#e2e8f0;">トンネルサービス</strong>（Cloudflare Tunnel等）を使って外部から到達可能にします。<br>
+          <span style="font-size:12px; color:#64748b;">※ Cloudflare Tunnelは無料で利用可能。社内PCに固定URLを付与するサービスです。</span>
+        </div>
+      </div>
+
+      <!-- Q2 -->
+      <div style="background:rgba(15,23,42,0.5); border:1px solid rgba(148,163,184,0.1); border-radius:14px; padding:20px 24px;">
+        <div style="font-size:13px; font-weight:700; color:#60a5fa; margin-bottom:8px;">Q. WebhookからClaude Codeをどう起動する？</div>
+        <div style="font-size:13px; color:#94a3b8; line-height:1.8;">
+          ローカルAPIサーバーがWebhookを受け取ったら、<strong style="color:#e2e8f0;">Claude Code CLI</strong>をコマンドとして実行します。<br>
+          <code style="font-size:12px; background:rgba(59,130,246,0.1); padding:2px 8px; border-radius:4px; color:#60a5fa;">claude -p "このMTGの文字起こしを処理して"</code><br>
+          このとき、<strong style="color:#e2e8f0;">.claude/ 配下のルール・Skillが全て読み込まれる</strong>ので、今ローカルで動かしているのと全く同じ振る舞いをします。
+        </div>
+      </div>
+
+      <!-- Q3 -->
+      <div style="background:rgba(15,23,42,0.5); border:1px solid rgba(148,163,184,0.1); border-radius:14px; padding:20px 24px;">
+        <div style="font-size:13px; font-weight:700; color:#60a5fa; margin-bottom:8px;">Q. GitHub・Google Drive・ChatWorkとの連携は？</div>
+        <div style="font-size:13px; color:#94a3b8; line-height:1.8;">
+          全て<strong style="color:#e2e8f0;">既に構築済みの仕組みをそのまま使います</strong>。<br>
+          ・GitHub: git commit + push（Claude Codeが自動実行）<br>
+          ・Google Drive: サービスアカウント経由（Python スクリプト、構築済み）<br>
+          ・ChatWork: ChatWork API でメッセージ送信（APIトークンのみ必要）<br>
+          新しく作る部分は<strong style="color:#e2e8f0;">Webhook受信サーバーだけ</strong>です。
+        </div>
+      </div>
+
+      <!-- Q4 -->
+      <div style="background:rgba(15,23,42,0.5); border:1px solid rgba(148,163,184,0.1); border-radius:14px; padding:20px 24px;">
+        <div style="font-size:13px; font-weight:700; color:#60a5fa; margin-bottom:8px;">Q. MacBook Proが落ちたらどうなる？</div>
+        <div style="font-size:13px; color:#94a3b8; line-height:1.8;">
+          停電・再起動が起きると処理が止まります。対策として：<br>
+          ・macOSの<strong style="color:#e2e8f0;">自動ログイン + サービス自動起動</strong>を設定（再起動後に自動復旧）<br>
+          ・Cloudflare Tunnelも自動起動設定可能<br>
+          ・万が一止まっても、Webhookの再送やキューイングで<strong style="color:#e2e8f0;">取りこぼしを防ぐ仕組み</strong>を入れられる<br>
+          <span style="font-size:12px; color:#64748b;">※ 頻繁に落ちるようであれば、その時点でクラウドVMへの移行を検討</span>
+        </div>
+      </div>
+
+      <!-- Q5 -->
+      <div style="background:rgba(15,23,42,0.5); border:1px solid rgba(148,163,184,0.1); border-radius:14px; padding:20px 24px;">
+        <div style="font-size:13px; font-weight:700; color:#60a5fa; margin-bottom:8px;">Q. なぜGASだけでは不十分なのか？</div>
+        <div style="font-size:13px; color:#94a3b8; line-height:1.8;">
+          GASは「要約してChatWorkに通知」程度なら問題なく動きます。<br>
+          しかし、IDEA Agentが目指す<strong style="color:#e2e8f0;">エージェントとしての複雑な処理</strong>は実現できません：<br>
+          ・過去のMTG履歴を踏まえた文脈理解（Skill連携）<br>
+          ・Google Driveの成果物を参照した企画書ドラフト作成<br>
+          ・複数ステップの逐次処理（分析→判断→生成→保存→通知）<br>
+          ・6分の実行時間制限（長いMTGの処理が間に合わない場合がある）<br>
+          これらは<strong style="color:#e2e8f0;">Claude Code + .mdルール・Skillの環境</strong>でしか実現できません。
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 構成要素まとめ -->
+    <h3 style="font-size:16px; font-weight:700; color:#f1f5f9; margin-top:32px; margin-bottom:16px;">MacBook Pro に必要な構成要素</h3>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px;">
+      <div style="background:rgba(15,23,42,0.5); border:1px solid rgba(148,163,184,0.1); border-radius:12px; padding:18px; text-align:center;">
+        <div style="font-size:11px; font-weight:700; color:#4ade80; margin-bottom:6px;">構築済み</div>
+        <div style="font-size:13px; font-weight:700; color:#e2e8f0;">Claude Code + .claude/</div>
+        <div style="font-size:11px; color:#64748b; margin-top:4px;">ルール・Skill・セキュリティ</div>
+      </div>
+      <div style="background:rgba(15,23,42,0.5); border:1px solid rgba(148,163,184,0.1); border-radius:12px; padding:18px; text-align:center;">
+        <div style="font-size:11px; font-weight:700; color:#4ade80; margin-bottom:6px;">構築済み</div>
+        <div style="font-size:13px; font-weight:700; color:#e2e8f0;">GitHub リポジトリ</div>
+        <div style="font-size:11px; color:#64748b; margin-top:4px;">242社フォルダ・671件MTG</div>
+      </div>
+      <div style="background:rgba(15,23,42,0.5); border:1px solid rgba(148,163,184,0.1); border-radius:12px; padding:18px; text-align:center;">
+        <div style="font-size:11px; font-weight:700; color:#4ade80; margin-bottom:6px;">構築済み</div>
+        <div style="font-size:13px; font-weight:700; color:#e2e8f0;">Google Drive連携</div>
+        <div style="font-size:11px; color:#64748b; margin-top:4px;">サービスアカウント設定済み</div>
+      </div>
+      <div style="background:rgba(15,23,42,0.5); border:1px solid rgba(250,204,21,0.2); border-radius:12px; padding:18px; text-align:center;">
+        <div style="font-size:11px; font-weight:700; color:#fbbf24; margin-bottom:6px;">新規構築</div>
+        <div style="font-size:13px; font-weight:700; color:#e2e8f0;">Webhook受信サーバー</div>
+        <div style="font-size:11px; color:#64748b; margin-top:4px;">Flask/Express（軽量）</div>
+      </div>
+      <div style="background:rgba(15,23,42,0.5); border:1px solid rgba(250,204,21,0.2); border-radius:12px; padding:18px; text-align:center;">
+        <div style="font-size:11px; font-weight:700; color:#fbbf24; margin-bottom:6px;">新規構築</div>
+        <div style="font-size:13px; font-weight:700; color:#e2e8f0;">Cloudflare Tunnel</div>
+        <div style="font-size:11px; color:#64748b; margin-top:4px;">無料・外部からの接続口</div>
+      </div>
+      <div style="background:rgba(15,23,42,0.5); border:1px solid rgba(250,204,21,0.2); border-radius:12px; padding:18px; text-align:center;">
+        <div style="font-size:11px; font-weight:700; color:#fbbf24; margin-bottom:6px;">要取得</div>
+        <div style="font-size:13px; font-weight:700; color:#e2e8f0;">ChatWork APIトークン</div>
+        <div style="font-size:11px; color:#64748b; margin-top:4px;">管理者から発行</div>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:20px;">
+      <div class="callout-icon">💡</div>
+      <div class="callout-text">
+        <strong>ポイント: 新しく作るものは少ない。</strong><br>
+        ナレッジ基盤（GitHub・Drive・Pipedrive連携）、AIのルール・Skill、セキュリティ設定は<strong>全て構築済み</strong>です。<br>
+        MacBook Proへの移行で新規に作るのは「Webhook受信サーバー」と「トンネル設定」だけ。<br>
+        残りは既存環境をそのまま移設するだけです。
+      </div>
     </div>
   </div>
 
